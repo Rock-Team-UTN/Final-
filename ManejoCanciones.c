@@ -71,6 +71,7 @@ nodoArbolCancion *  archivoToArbol(nodoArbolCancion* arbol)
     {
         while(fread(&cancioncita,sizeof(Cancion),1,archi)>0)
         {
+            printf("entro a guardarArchivo\n");
             arbol=cargarArbolOrdenado(arbol,CrearNodoArbolSong(cancioncita));
         }
     }
@@ -89,48 +90,172 @@ void GuardarCancion (Cancion musica)
 
 }
 
-void mostrarCancionesEliminadas(nodoArbolCancion * arbol){
-   if(arbol!=NULL){
-    mostrarCancionesEliminadas(arbol->izq);
-    if(arbol->song.eliminado == 1){
-        mostrarCancion(arbol->song);
+void mostrarCancionesEliminadas(nodoArbolCancion * arbol)
+{
+    if(arbol!=NULL)
+    {
+        mostrarCancionesEliminadas(arbol->izq);
+        if(arbol->song.eliminado == 1)
+        {
+            mostrarCancion(arbol->song);
+        }
+        mostrarCancionesEliminadas(arbol->der);
     }
-    mostrarCancionesEliminadas(arbol->der);
-   }
 
 }
 
-int buscarID(char buscador[]){
+int buscarID(char buscador[])
+{
     FILE * archi=fopen(SONGS,"rb");
     Cancion buscando;
-    int pos-1;
-    if(archi!=NULL){
-        while(fread(&buscando,sizeof(Cancion),1,archi)){
-            if(strcmp(buscador,buscando.titulo)== 0){
+    int pos=-1;
+    if(archi!=NULL)
+    {
+        while(fread(&buscando,sizeof(Cancion),1,archi))
+        {
+            if(strcmp(buscador,buscando.titulo)== 0)
+            {
                 pos=buscando.idCancion;
             }
         }
-    fclose(archi);
+        fclose(archi);
     }
-return id;
+    return pos;
 }
 
 
-nodoArbolCancion * altaCreado(nodoArbolCancion * arbol,char buscador[]){
+
+nodoArbolCancion * altaCreado(nodoArbolCancion * arbol,char buscador[])
+{
     Cancion buscar;
 
     FILE * archi=fopen(SONGS,"r+b");
-    if(archi!=NULL){
+    if(archi!=NULL)
+    {
         fseek(archi,sizeof(Cancion)*buscarID(buscador),SEEK_SET);
         fread(&buscar,sizeof(Cancion),1,archi);
         fseek(archi,sizeof(Cancion)*-1,SEEK_CUR);
         buscar.eliminado=0;
         arbol=cargarArbolOrdenado(arbol,CrearNodoArbolSong(buscar));
-        fwrite(&nuevo->song,sizeof(Cancion),1,archi);
+        fwrite(&buscar,sizeof(Cancion),1,archi);
         fclose(archi);
-        }
-return arbol;
+    }
+    return arbol;
 }
+
+
+int contarRegistrosCanciones(int pesoDat)
+{
+    FILE * archi=fopen(SONGS,"rb");
+    int total;
+    if(archi!=NULL)
+    {
+        fseek(archi,0,SEEK_END);
+        total=ftell(archi)/pesoDat;
+        fclose(archi);
+    }
+    return total;
+}
+
+
+
+nodoArbolCancion * modificarCancion(nodoArbolCancion * arbol, int eleccion,nodoArbolCancion * nuevo)
+{
+
+    if(eleccion!=0 && eleccion<5)
+    {
+
+
+        switch(eleccion)
+        {
+        case 1:
+            printf("Cambiar Nombre:\n");
+            fflush(stdin);
+            printf("Nombre anterior: %s",nuevo->song.titulo);
+            printf("Nuevo nombre: ");
+            gets(nuevo->song.titulo);
+            break;
+        case 2:
+            printf("Cambiar Album:");
+            printf("Nombre del album anterior: %s",nuevo->song.album);
+            printf("Nombre del album nuevo : ");
+            fflush(stdin);
+            gets(nuevo->song.album);
+            break;
+        case 3:
+            printf("Cambiar tiempo:\n");
+            printf("Tiempo anterior de : %i",nuevo->song.duracion);
+            printf("Nuevo tiempo :");
+            fflush(stdin);
+            scanf("%i",&nuevo->song.duracion);
+            break;
+        case 4:
+            printf("Cambiar anio:\n");
+            printf("Anio Anterior: %i\n",nuevo->song.anio);
+            printf("Nuevo anio :");
+            fflush(stdin);
+            scanf("%i",&nuevo->song.anio);
+            break;
+
+        }
+        FILE * archi=fopen(SONGS,"r+b");
+        if(archi!=NULL)
+        {
+            fseek(archi,sizeof(Cancion)*nuevo->song.idCancion,SEEK_SET);
+            fwrite(&nuevo->song,sizeof(Cancion),1,archi);
+            fclose(archi);
+        }
+    }
+    return arbol;
+}
+
+
+
+void mostrarArchivoCancion()
+{
+    Cancion cancioncita;
+    FILE * archi=fopen(SONGS,"rb");
+    if(archi!=NULL)
+    {
+        while(fread(&cancioncita,sizeof(Cancion),1,archi)>0)
+        {
+            mostrarCancion(cancioncita);
+        }
+        fclose(archi);
+    }
+}
+
+
+
+void bajarDelArchivo(char nombre[])
+{
+    Cancion cancioncita;
+    int flag=0;
+    FILE * archi=fopen(SONGS,"r+b");
+    if(archi!=NULL)
+    {
+        while(fread(&cancioncita,sizeof(Cancion),1,archi)>0 && flag == 0)
+        {
+            if(strcmp(cancioncita.titulo,nombre)==0)
+            {
+                cancioncita.eliminado=0;
+                fseek(archi,sizeof(Cancion)*cancioncita.idCancion,SEEK_SET);
+                fwrite(&cancioncita,sizeof(Cancion),1,archi);
+                flag=1;
+            }
+        }
+        fclose(archi);
+    }
+}
+
+
+nodoArbolCancion * bajaCancion(nodoArbolCancion * arbol,char nombre[])
+{
+    bajarDelArchivo(nombre);
+    arbol=borrarCancionPorID(arbol,buscarID(nombre));
+    return arbol;
+}
+
 
 
 /*void MostrarPorNombreCancion(nodoArbolCancion * arbol);
