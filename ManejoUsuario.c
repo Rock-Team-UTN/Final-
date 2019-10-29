@@ -29,7 +29,7 @@ stNodo * cargarUsuario(Usuario usuario,int id,stNodo * lista,int adm)
         }
         usuario.pass[i]='\0';
         printf("\n");
-        printf("\n\t\t\t\t<<<<INGRESE AÃ‘O DE NACIMIENTO>>>>>>\n\n\t\t\t\t\t");
+        printf("\n\t\t\t\t<<<<INGRESE AÑO DE NACIMIENTO>>>>>>\n\n\t\t\t\t\t");
         fflush(stdin);
         scanf("%i",&usuario.anioNacimiento);
 
@@ -386,7 +386,7 @@ void Logo()
 }
 stNodo * modificar(Usuario usuario,int opcion,stNodo * lista)
 {
-//caso 1: cambia nombre//caso 2:cambia contraseÃ±a//case 3:cambia edad//caso 4: cambia pais;
+//caso 1: cambia nombre//caso 2:cambia contraseña//case 3:cambia edad//caso 4: cambia pais;
     char nomPass[50];
     int edad;
     switch(opcion)
@@ -618,7 +618,6 @@ void spotifyMovimiento(int inicio,int finalizacion,int velocidad,int altura){
 
         printf("\n\n");
         printf("\t\t\t\t");
-
 }
 
 int contarRegistros(int pesoDat){
@@ -631,5 +630,6 @@ int contarRegistros(int pesoDat){
 return cantidad;
 
 }
+
 
 ///spotifyMovimiento(70,20,2,3);
