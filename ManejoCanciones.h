@@ -14,6 +14,4 @@ void bajarDelArchivo(char nombre[]);
 void mostrarArchivoCancion();
 nodoArbolCancion * modificarCancion(nodoArbolCancion * arbol, int eleccion,nodoArbolCancion * nuevo);
 int contarRegistrosCanciones(int pesoDat);
-
-
 #endif // MANEJOCANCIONES_H_INCLUDED
