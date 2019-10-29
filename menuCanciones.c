@@ -5,7 +5,7 @@ void menuCanciones(nodoArbolCancion * arbol)
     int total;
     int seleccion;
     char cancion[50];
-    Cancion cancione;
+    nodoArbolCancion * cancione=InicArbol();
     int confirmacion;
     int opcion;
     arbol=archivoToArbol(arbol);
@@ -54,42 +54,38 @@ void menuCanciones(nodoArbolCancion * arbol)
             system("cls");
             Logo();
             printf("\t\t\t\t<<<<<<<<CANTIDAD DE REGISTROS>>>>>>>>>>>\n");
-            total=contarRegistros(arCancion,sizeof(Cancion));
+            total=contarRegistrosCanciones(sizeof(Cancion));
             printf("\t\t\t\tcantidad de registos %i",total);
             getch();
-            
+
             break;
              case 4:
             system("cls");
             Logo();
             printf("\t\t\t\t<<<<<<<<<<<<<BAJA CANCION>>>>>>>>>>>>>>>\n");
-            mostrarCanciones();
+            mostrarInOrder(arbol);
             printf("\t\t\t\tIngrese nombre de cancion a dar de baja\n\t\t\t\t");
             fflush(stdin);
                 gets(cancion);
-                confirmacion=bajaCancion(cancion,cancione);
-                if(confirmacion==1){
-                printf("\n\t\t\t\tCancion eliminada");
-                getch();
-                }
+                arbol=bajaCancion(arbol,cancion);
                 break;
-            
+
             case 5:
             system("cls");
              Logo();
              printf("\t\t\t\t<<<<<<<<<<<<MODIFICAR>>>>>>>>>>>\n");
-             mostrarTodasCanciones();
+            mostrarArchivoCancion();
              printf("\t\t\t\tIngrese nombre de cancion que desea modificar\n\t\t\t\t");
              fflush(stdin);
              gets(cancion);
-             confirmacion=buscarIDCancion(cancione,cancion);
+             confirmacion=buscarID(cancion);
              if(confirmacion!=-1){
-                 cancione=buscarCancion(cancione,cancion);
+                 cancione=buscarCancionEnArbol(arbol,cancion);
                  printf(" \t\t\t\t1:CAMBIAR NOMBRE\n\t\t\t\t2:CAMBIAR ALBUM\n\t\t\t\t3:CAMBIAR TIEMPO\n\t\t\t\t4:CAMBIAR ANIO\n\t\t\t\t0:SALIR\n\t\t\t\t");
                  fflush(stdin);
                  scanf("%i",&seleccion);
-                 modificarCancion(cancione,seleccion);
-            
+                 arbol=modificarCancion(arbol,seleccion,cancione);
+
         }
          break;
 
@@ -97,11 +93,13 @@ void menuCanciones(nodoArbolCancion * arbol)
         system("cls");
         Logo();
         printf("\t\t\t\t<<<<<<<<LISTADO DE CANCIONES>>>>>>>>>>>\n");
+        mostrarArchivoCancion();
         getch();
 
 
     }
-    while(seleccion!=0);
+}    while(seleccion!=0);
+
 }
 
 
